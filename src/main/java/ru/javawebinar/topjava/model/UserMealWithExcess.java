@@ -9,22 +9,46 @@ public class UserMealWithExcess {
 
     private final int calories;
 
-    private final boolean excess;
+    private final DayCaloriesFlag dayCaloriesFlag;
 
-    public UserMealWithExcess(LocalDateTime dateTime, String description, int calories, boolean excess) {
+    public UserMealWithExcess(LocalDateTime dateTime, String description, int calories, DayCaloriesFlag dayCalorieState) {
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
-        this.excess = excess;
+        this.dayCaloriesFlag = dayCalorieState;
+    }
+
+    public UserMealWithExcess(LocalDateTime dateTime, String description, int calories, boolean excess) {
+        this(dateTime, description, calories, new DayCaloriesFlag(excess));
     }
 
     @Override
     public String toString() {
         return "UserMealWithExcess{" +
-                "dateTime=" + dateTime +
-                ", description='" + description + '\'' +
-                ", calories=" + calories +
-                ", excess=" + excess +
-                '}';
+               "dateTime=" + dateTime +
+               ", description='" + description + '\'' +
+               ", calories=" + calories +
+               ", dayCaloriesFlag=" + dayCaloriesFlag +
+               '}';
+    }
+
+    public static class DayCaloriesFlag {
+        private boolean excess;
+
+        public DayCaloriesFlag() {
+        }
+
+        public DayCaloriesFlag(boolean excess) {
+            this.excess = excess;
+        }
+
+        public void setExcess(boolean excess) {
+            this.excess = excess;
+        }
+
+        @Override
+        public String toString() {
+            return "excess=" + excess;
+        }
     }
 }
