@@ -2,13 +2,13 @@ package ru.javawebinar.topjava.util;
 
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.model.UserMealWithExcess;
-import ru.javawebinar.topjava.model.UserMealWithExcess.DayCaloriesFlag;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class UserMealsUtil {
@@ -55,8 +55,8 @@ public class UserMealsUtil {
                         userMeal -> userMeal.getDateTime().toLocalDate(), Collectors.collectingAndThen(
                                 Collectors.summingInt(UserMeal::getCalories), sum -> sum > caloriesPerDay)));
         return meals.stream()
-                .filter(userMael -> TimeUtil.isBetweenHalfOpen(
-                        userMael.getDateTime().toLocalTime(), startTime, endTime))
+                .filter(userMeal -> TimeUtil.isBetweenHalfOpen(
+                        userMeal.getDateTime().toLocalTime(), startTime, endTime))
                 .map(userMeal -> new UserMealWithExcess(
                         userMeal.getDateTime(), userMeal.getDescription(),
                         userMeal.getCalories(), excessByDate.get(userMeal.getDateTime().toLocalDate())))
@@ -65,14 +65,14 @@ public class UserMealsUtil {
 
     public static List<UserMealWithExcess> filteredByOnePass(
             List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        Map<LocalDate, DayCaloriesFlag> dateFlags = new HashMap<>();
+        Map<LocalDate, AtomicBoolean> dateFlags = new HashMap<>();
         Map<LocalDate, Integer> calories = new HashMap<>();
         List<UserMealWithExcess> filteredUserMealWithExcess = new ArrayList<>();
         for (UserMeal userMeal : meals) {
             LocalDate date = userMeal.getDateTime().toLocalDate();
             calories.put(date, calories.getOrDefault(date, 0) + userMeal.getCalories());
-            DayCaloriesFlag flag = dateFlags.computeIfAbsent(date, v -> new DayCaloriesFlag());
-            dateFlags.get(date).setExcess(calories.get(date) > caloriesPerDay);
+            AtomicBoolean flag = dateFlags.computeIfAbsent(date, v -> new AtomicBoolean());
+            flag.set(calories.get(date) > caloriesPerDay);
             if (TimeUtil.isBetweenHalfOpen(userMeal.getDateTime().toLocalTime(), startTime, endTime)) {
                 filteredUserMealWithExcess.add(new UserMealWithExcess(userMeal.getDateTime(), userMeal.getDescription(), userMeal.getCalories(),
                         flag));
