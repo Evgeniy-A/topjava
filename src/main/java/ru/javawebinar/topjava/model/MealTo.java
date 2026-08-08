@@ -40,6 +40,10 @@ public class MealTo {
         return dateTime.toLocalTime();
     }
 
+    public boolean isExcess() {
+        return excess;
+    }
+
     @Override
     public String toString() {
         return "MealTo{" +
