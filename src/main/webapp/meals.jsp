@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8"  %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="javatime" uri="http://sargue.net/jsptags/time" %>
 <html lang="ru">
 <head>
     <title>Meal list</title>
@@ -17,16 +16,19 @@
     </tr>
 
     <jsp:useBean id="mealsTo" scope="request" type="java.util.List"/>
+    <jsp:useBean id="dateTimeFormatter" scope="request" type="java.time.format.DateTimeFormatter"/>
     <c:forEach items="${mealsTo}" var="mealTo">
 
     <tr style="color: ${mealTo.excess ? 'red' : 'green'};" >
         <td>
-            <javatime:format value="${mealTo.dateTime}" pattern="dd.MM.yyyy HH:mm" />
+                ${dateTimeFormatter.format(mealTo.dateTime)}
         </td>
         <td>${mealTo.description}</td>
         <td>${mealTo.calories}</td>
     </tr>
+
     </c:forEach>
+
 </table>
 </body>
 </html>
