@@ -8,6 +8,9 @@
 <h3><a href="index.html">Home</a></h3>
 <hr>
 <h2>Meals</h2>
+<a href="<c:url value='/meals'>
+         <c:param name='action' value='add' />
+         </c:url>">Add Meal</a>
 <table border="1">
     <tr>
         <th>Date</th>
@@ -25,6 +28,18 @@
         </td>
         <td>${mealTo.description}</td>
         <td>${mealTo.calories}</td>
+        <td>
+            <a href="<c:url value='/meals'>
+            <c:param name='action' value='update' />
+            <c:param name='id' value='${mealTo.id}' />
+            </c:url>">Update</a>
+        </td>
+        <td>
+            <a href="<c:url value='/meals'>
+            <c:param name='action' value='delete' />
+            <c:param name='id' value='${mealTo.id}' />
+            </c:url>">Delete</a>
+        </td>
     </tr>
 
     </c:forEach>
