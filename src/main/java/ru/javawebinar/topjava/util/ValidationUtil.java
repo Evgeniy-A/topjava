@@ -40,4 +40,13 @@ public class ValidationUtil {
             throw new IllegalArgumentException(entity + " must be with id=" + id);
         }
     }
+
+    public static <T extends Comparable<? super T>> void checkRange(T start, T end) {
+        if(start == null || end == null) {
+            return;
+        }
+        if (start.compareTo(end) > 0) {
+            throw new IllegalArgumentException(start + " must be before or equal to end " + end);
+        }
+    }
 }
