@@ -22,11 +22,16 @@ import static ru.javawebinar.topjava.util.TimeUtil.DATE_TIME_FORMATTER;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
-    private final MealStorage storage = new InMemoryMealStorage(MealsUtil.meals);
+    private MealStorage storage;
+
+
+    @Override
+    public void init() throws ServletException {
+        storage = new InMemoryMealStorage(MealsUtil.meals);
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        log.debug("forward to meals");
         String action = request.getParameter("action");
         if (action == null) {
             action = "list";
@@ -35,15 +40,18 @@ public class MealServlet extends HttpServlet {
             case "update" :
                 request.setAttribute("meal", storage.get(Integer.parseInt(request.getParameter("id"))));
             case "add" :
+                log.debug("forward to editMeal");
                 request.getRequestDispatcher("/editMeal.jsp").forward(request, response);
                 break;
             case "delete" :
                 int id = Integer.parseInt(request.getParameter("id"));
+                log.debug("delete meal, id={}", id);
                 storage.delete(id);
                 response.sendRedirect(request.getRequestURI());
                 break;
             case "list":
             default:
+                log.debug("forward to meals");
                 List<MealTo> mealsTo =  MealsUtil.filteredByStreams(storage.getAll(), CALORIES_PER_DAY, meal -> true);
                 request.setAttribute("mealsTo", mealsTo);
                 request.setAttribute("dateTimeFormatter", DATE_TIME_FORMATTER);
@@ -51,17 +59,14 @@ public class MealServlet extends HttpServlet {
         }
     }
 
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        int id = ((request.getParameter("id")).trim().isEmpty()) ? -1 : Integer.parseInt(request.getParameter("id"));
+        Integer id = ((request.getParameter("id")).trim().isEmpty()) ? null : Integer.parseInt(request.getParameter("id"));
         LocalDateTime dateTime = LocalDateTime.parse(request.getParameter("dateTime"));
         String description = request.getParameter("description");
         int calories = Integer.parseInt(request.getParameter("calories"));
-        if (id < 0) {
-            storage.save(new Meal(null, dateTime, description, calories));
-        } else {
-            storage.update(new Meal(id, dateTime, description, calories));
-        }
+        storage.save(new Meal(id, dateTime, description, calories));
         response.sendRedirect(request.getRequestURI());
     }
 }

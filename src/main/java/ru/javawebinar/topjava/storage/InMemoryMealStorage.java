@@ -10,7 +10,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class InMemoryMealStorage implements MealStorage{
     private final Map<Integer, Meal> storage = new ConcurrentHashMap<>();
+
     private final AtomicInteger idCounter = new AtomicInteger();
+
+    public InMemoryMealStorage() {
+    }
 
     public InMemoryMealStorage(List<Meal> meals) {
         for (Meal meal : meals) {
@@ -18,27 +22,21 @@ public class InMemoryMealStorage implements MealStorage{
         }
     }
 
-    public Map<Integer, Meal> getStorage() {
-        return storage;
-    }
-
     @Override
     public Meal save(Meal meal) {
-        int id = idCounter.getAndIncrement();
-        Meal newMeal = new Meal(id, meal.getDateTime(), meal.getDescription(), meal.getCalories());
-        storage.put(id, newMeal);
-        return newMeal;
+        if (meal.getId() == null) {
+            int id = idCounter.getAndIncrement();
+            Meal newMeal = new Meal(id, meal.getDateTime(), meal.getDescription(), meal.getCalories());
+            storage.put(id, newMeal);
+            return newMeal;
+        }
+        return storage.computeIfPresent(meal.getId(), (id, oldMeal)  ->
+                new Meal(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories()));
     }
 
     @Override
     public Meal get(int id) {
         return storage.get(id);
-    }
-
-    @Override
-    public boolean update(Meal meal) {
-        return (storage.replace(meal.getId(),
-                new Meal(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories())) != null);
     }
 
     @Override
@@ -48,6 +46,6 @@ public class InMemoryMealStorage implements MealStorage{
 
     @Override
     public List<Meal> getAll() {
-        return new ArrayList<Meal>(storage.values());
+        return new ArrayList<>(storage.values());
     }
 }

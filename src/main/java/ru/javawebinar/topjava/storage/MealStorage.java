@@ -9,8 +9,6 @@ public interface MealStorage {
 
     Meal get(int id);
 
-    boolean update(Meal meal);
-
     boolean delete(int id);
 
     List<Meal> getAll();
