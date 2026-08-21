@@ -24,7 +24,6 @@ public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
     private MealStorage storage;
 
-
     @Override
     public void init() throws ServletException {
         storage = new InMemoryMealStorage(MealsUtil.meals);
@@ -66,6 +65,7 @@ public class MealServlet extends HttpServlet {
         LocalDateTime dateTime = LocalDateTime.parse(request.getParameter("dateTime"));
         String description = request.getParameter("description");
         int calories = Integer.parseInt(request.getParameter("calories"));
+        log.debug("{} meal, id={}", id == null ? "create" : "update", id);
         storage.save(new Meal(id, dateTime, description, calories));
         response.sendRedirect(request.getRequestURI());
     }

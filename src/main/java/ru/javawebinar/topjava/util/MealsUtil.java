@@ -26,15 +26,6 @@ public class MealsUtil {
     );
     public static final int CALORIES_PER_DAY = 2000;
 
-    public static void main(String[] args) {
-//        List<MealTo> mealsTo = filteredByStreams(meals, CALORIES_PER_DAY,
-//                meal -> TimeUtil.isBetweenHalfOpen(
-//                        meal.getTime(),
-//                        LocalTime.of(7, 0),
-//                        LocalTime.of(12, 0)));
-//        mealsTo.forEach(System.out::println);
-    }
-
     public static List<MealTo> filteredByStreams(List<Meal> meals, int caloriesPerDay, Predicate<Meal> filter) {
         Map<LocalDate, Integer> caloriesSumByDate = meals.stream()
                 .collect(Collectors.groupingBy(Meal::getDate, Collectors.summingInt(Meal::getCalories)));
