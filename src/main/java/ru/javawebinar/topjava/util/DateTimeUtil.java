@@ -6,10 +6,11 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class DateTimeUtil {
+
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public static  <T extends Comparable<? super T>> boolean isBetweenHalfOpen(T lt, T startTime, T endTime) {
-        return lt.compareTo(startTime) >= 0 && lt.compareTo(endTime) <0;
+    public static <T extends Comparable<? super T>> boolean isBetweenHalfOpen(T value, T start, T end) {
+        return value.compareTo(start) >= 0 && value.compareTo(end) < 0;
     }
 
     public static LocalDateTime atStartOfDayOrMin(LocalDate startDate) {
@@ -19,7 +20,7 @@ public class DateTimeUtil {
         return startDate.atStartOfDay();
     }
 
-    public static LocalDateTime atStartOfNextDayOrMax (LocalDate endDate) {
+    public static LocalDateTime atStartOfNextDayOrMax(LocalDate endDate) {
         if (endDate == null) {
             return LocalDateTime.MAX;
         }
@@ -33,13 +34,12 @@ public class DateTimeUtil {
         return startTime;
     }
 
-    public static LocalTime defaultToMax (LocalTime endTime) {
+    public static LocalTime defaultToMax(LocalTime endTime) {
         if (endTime == null) {
             return LocalTime.MAX;
         }
         return endTime;
     }
-
 
     public static String toString(LocalDateTime ldt) {
         return ldt == null ? "" : ldt.format(DATE_TIME_FORMATTER);

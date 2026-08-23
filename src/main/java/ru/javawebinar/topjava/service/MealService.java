@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFound;
+
 @Service
 public class MealService {
 
@@ -19,7 +20,7 @@ public class MealService {
     }
 
     public Meal create(Meal meal, int userId) {
-       return repository.save(meal, userId);
+        return repository.save(meal, userId);
     }
 
     public void delete(int userId, int mealId) {
@@ -35,10 +36,10 @@ public class MealService {
     }
 
     public List<Meal> getAll(int userId) {
-        return new ArrayList<>(repository.getAll(userId));
+        return repository.getAll(userId);
     }
 
-    public Meal update (Meal meal, int userId) {
+    public Meal update(Meal meal, int userId) {
         return checkNotFound(repository.save(meal, userId), meal.getId());
     }
 }

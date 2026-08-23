@@ -13,10 +13,12 @@ import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryUserRepository implements UserRepository {
-    private static final Logger log = LoggerFactory.getLogger(InMemoryUserRepository.class);
-    private final Map<Integer, User> userMap = new ConcurrentHashMap<>();
-    private final AtomicInteger counter = new AtomicInteger(0);
 
+    private static final Logger log = LoggerFactory.getLogger(InMemoryUserRepository.class);
+
+    private final Map<Integer, User> userMap = new ConcurrentHashMap<>();
+
+    private final AtomicInteger counter = new AtomicInteger(0);
 
     @Override
     public boolean delete(int id) {
@@ -27,10 +29,10 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public User save(User user) {
         log.info("save {}", user);
-        if(user.isNew()) {
-           user.setId(counter.incrementAndGet());
-           userMap.put(user.getId(), user);
-           return user;
+        if (user.isNew()) {
+            user.setId(counter.incrementAndGet());
+            userMap.put(user.getId(), user);
+            return user;
         }
         return userMap.computeIfPresent(user.getId(), (id, oldUser) -> user);
     }
@@ -44,8 +46,9 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public List<User> getAll() {
         log.info("getAll");
-        return userMap.values().stream().sorted(Comparator.comparing(User::getName).thenComparing(User::getEmail))
-        .collect(Collectors.toList());
+        return userMap.values().stream()
+                .sorted(Comparator.comparing(User::getName).thenComparing(User::getEmail))
+                .collect(Collectors.toList());
     }
 
     @Override

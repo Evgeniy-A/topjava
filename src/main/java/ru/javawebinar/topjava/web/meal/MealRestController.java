@@ -21,7 +21,8 @@ import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
 @Controller
 public class MealRestController {
-    protected final Logger log = LoggerFactory.getLogger(getClass());
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private MealService service;
@@ -33,7 +34,7 @@ public class MealRestController {
 
     public Meal get(int mealId) {
         log.info("get {}", mealId);
-       return service.get(authUserId(), mealId);
+        return service.get(authUserId(), mealId);
     }
 
     public Meal create(Meal meal) {
@@ -48,24 +49,28 @@ public class MealRestController {
     }
 
     public void update(Meal meal, int mealId) {
-        log.info("update {} with id={}", meal,  mealId);
+        log.info("update {} with id={}", meal, mealId);
         assureIdConsistent(meal, mealId);
         service.update(meal, authUserId());
     }
 
-    public List<MealTo> getBetween (LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
-        log.info("getBetween Date {} - {} Time {} - {} with id={}", startDate, endDate, startTime, endTime,  authUserId());
+    public List<MealTo> getBetween(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
+        log.info(
+                "getBetween Date {} - {} Time {} - {} with id={}",
+                startDate, endDate, startTime, endTime, authUserId());
         checkRange(startDate, endDate);
         checkRange(startTime, endTime);
         List<Meal> meals;
         if (startDate == null && endDate == null) {
             meals = service.getAll(authUserId());
         } else {
-            meals = service.getBetween(authUserId(), atStartOfDayOrMin(startDate), atStartOfNextDayOrMax(endDate));
+            meals = service
+                    .getBetween(authUserId(), atStartOfDayOrMin(startDate), atStartOfNextDayOrMax(endDate));
         }
         if (startTime == null && endTime == null) {
-            return  MealsUtil.getTos(meals, authUserCaloriesPerDay());
+            return MealsUtil.getTos(meals, authUserCaloriesPerDay());
         }
-        return MealsUtil.getFilteredTos(meals, authUserCaloriesPerDay(), defaultToMin(startTime), defaultToMax(endTime));
+        return MealsUtil
+                .getFilteredTos(meals, authUserCaloriesPerDay(), defaultToMin(startTime), defaultToMax(endTime));
     }
 }
