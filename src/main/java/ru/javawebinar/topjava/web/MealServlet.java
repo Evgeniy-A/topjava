@@ -12,9 +12,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
+import java.util.function.Function;
+
+import static javax.xml.bind.DatatypeConverter.parseDate;
 
 public class MealServlet extends HttpServlet {
 
@@ -76,7 +81,11 @@ public class MealServlet extends HttpServlet {
             case "all":
             default:
                 log.info("getAll");
-                request.setAttribute("meals", mealRestController.getAll());
+                LocalDate startDate = parseValue(request.getParameter("startDate"), LocalDate::parse);
+                LocalDate endDate = parseValue(request.getParameter("endDate"), LocalDate::parse);
+                LocalTime startTime = parseValue(request.getParameter("startTime"), LocalTime::parse);
+                LocalTime endTime = parseValue(request.getParameter("endTime"), LocalTime::parse);
+                request.setAttribute("meals", mealRestController.getBetween(startDate, endDate, startTime, endTime));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
@@ -85,5 +94,9 @@ public class MealServlet extends HttpServlet {
     private int getMealId(HttpServletRequest request) {
         String paramId = Objects.requireNonNull(request.getParameter("id"));
         return Integer.parseInt(paramId);
+    }
+
+    private <T> T parseValue(String value, Function<String, T> parser) {
+        return (value == null || value.trim().isEmpty()) ? null : parser.apply(value);
     }
 }
