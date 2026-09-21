@@ -1,8 +1,13 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.Ignore;
+import org.junit.AfterClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Stopwatch;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
@@ -14,6 +19,9 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -30,6 +38,29 @@ public class MealServiceTest {
 
     @Autowired
     private MealService service;
+
+    private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
+
+    private static final Map<String, Long> STOPWATCH_MAP = new LinkedHashMap<>();
+
+    @Rule
+    public Stopwatch stopwatch = new Stopwatch() {
+        @Override
+        protected void finished(long nanos, Description description) {
+            long millis = TimeUnit.NANOSECONDS.toMillis(nanos);
+            String method = description.getMethodName();
+            STOPWATCH_MAP.put(method, millis);
+            log.info("{} - {} мс", method, millis);
+        }
+    };
+
+    @AfterClass
+    public static void finishedLog() {
+        log.info("=== MealServiceTest execution summary ===");
+        for (Map.Entry<String, Long> entry : STOPWATCH_MAP.entrySet()) {
+            log.info("{} - {} мс", entry.getKey(), entry.getValue());
+        }
+    }
 
     @Test
     public void delete() {
