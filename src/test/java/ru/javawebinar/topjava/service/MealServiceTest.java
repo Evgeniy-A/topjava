@@ -41,7 +41,7 @@ public class MealServiceTest {
 
     private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
 
-    private static final Map<String, Long> STOPWATCH_MAP = new LinkedHashMap<>();
+    private static final Map<String, Long> stopWatchMap = new LinkedHashMap<>();
 
     @Rule
     public Stopwatch stopwatch = new Stopwatch() {
@@ -49,17 +49,22 @@ public class MealServiceTest {
         protected void finished(long nanos, Description description) {
             long millis = TimeUnit.NANOSECONDS.toMillis(nanos);
             String method = description.getMethodName();
-            STOPWATCH_MAP.put(method, millis);
-            log.info("{} - {} мс", method, millis);
+            stopWatchMap.put(method, millis);
+            log.info("{} - {} ms", method, millis);
         }
     };
 
     @AfterClass
     public static void finishedLog() {
-        log.info("=== MealServiceTest execution summary ===");
-        for (Map.Entry<String, Long> entry : STOPWATCH_MAP.entrySet()) {
-            log.info("{} - {} мс", entry.getKey(), entry.getValue());
+        StringBuilder summary = new StringBuilder("=== MealServiceTest execution summary ===");
+        for (Map.Entry<String, Long> entry : stopWatchMap.entrySet()) {
+            summary.append(System.lineSeparator())
+                    .append(entry.getKey())
+                    .append(" - ")
+                    .append(entry.getValue())
+                    .append(" ms");
         }
+        log.info(summary.toString());
     }
 
     @Test
