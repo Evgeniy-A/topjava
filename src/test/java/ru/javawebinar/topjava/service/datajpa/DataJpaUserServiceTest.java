@@ -21,6 +21,4 @@ public class DataJpaUserServiceTest extends AbstractUserServiceTest {
         USER_MATCHER.assertMatch(user, UserTestData.user);
         MEAL_MATCHER.assertMatch(user.getMeals(), meals);
     }
-
-
 }

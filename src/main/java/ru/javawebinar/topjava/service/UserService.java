@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava.service;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -53,6 +52,6 @@ public class UserService {
     }
 
     public User getWithMeals(int id) {
-        return  checkNotFound(repository.getWithMeals(id), id);
+        return checkNotFound(repository.getWithMeals(id), id);
     }
 }
