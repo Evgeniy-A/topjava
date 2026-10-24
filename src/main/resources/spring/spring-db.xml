@@ -92,7 +92,8 @@
                            value="org.hibernate.cache.jcache.internal.JCacheRegionFactory"/>
                     <entry key="#{T(org.hibernate.cache.jcache.ConfigSettings).PROVIDER}"
                            value="org.ehcache.jsr107.EhcacheCachingProvider"/>
-                    <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_SECOND_LEVEL_CACHE}" value="true"/>
+                    <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_SECOND_LEVEL_CACHE}"
+                           value="${hibernate.cache.use_second_level_cache:true}"/>
                     <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_QUERY_CACHE}"
                            value="false"/> <!--default-->
                     <!--
@@ -114,7 +115,6 @@
         <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"
               p:entityManagerFactory-ref="entityManagerFactory"/>
 
-        <bean class="ru.javawebinar.topjava.repository.JpaUtil"/>
     </beans>
 
     <beans profile="jpa">

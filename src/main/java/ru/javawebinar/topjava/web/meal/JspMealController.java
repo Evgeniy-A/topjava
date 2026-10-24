@@ -10,7 +10,6 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -72,9 +71,8 @@ public class JspMealController extends AbstractMealController {
     }
 
     @PostMapping
-    public String save(HttpServletRequest request) throws UnsupportedEncodingException {
-        log.info("save mea");
-        request.setCharacterEncoding("UTF-8");
+    public String save(HttpServletRequest request) {
+        log.info("save meal");
         Meal meal = new Meal(
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
