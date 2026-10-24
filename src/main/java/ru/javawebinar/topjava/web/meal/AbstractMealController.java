@@ -1,4 +1,4 @@
-package ru.javawebinar.topjava.web;
+package ru.javawebinar.topjava.web.meal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,6 +7,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -16,7 +17,7 @@ import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkIsNew;
 
 public abstract class AbstractMealController {
-    private static final Logger log = LoggerFactory.getLogger(AbstractMealController.class);
+    protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
     protected MealService service;
 

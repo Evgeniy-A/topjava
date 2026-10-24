@@ -1,12 +1,11 @@
-package ru.javawebinar.topjava.web;
+package ru.javawebinar.topjava.web.meal;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 
@@ -22,23 +21,23 @@ import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalDate;
 import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
 
 @Controller
+@RequestMapping("/meals")
 public class JspMealController extends AbstractMealController {
-    private static final Logger log = LoggerFactory.getLogger(JspMealController.class);
 
     public JspMealController(MealService service) {
         super(service);
     }
 
-    @GetMapping("/meals")
-    public String getMeals(Model model) {
-        log.info("meals");
+    @GetMapping
+    public String get(Model model) {
+        log.info("get all meals");
         model.addAttribute("meals", getAll());
         return "meals";
     }
 
-    @GetMapping(value = "/meals/filter")
-    public String filterMeals(HttpServletRequest request, Model model) {
-        log.info("/meals/filter");
+    @GetMapping("/filter")
+    public String filter(HttpServletRequest request, Model model) {
+        log.info("filter meals");
         LocalDate startDate = parseLocalDate(request.getParameter("startDate"));
         LocalDate endDate = parseLocalDate(request.getParameter("endDate"));
         LocalTime startTime = parseLocalTime(request.getParameter("startTime"));
@@ -48,33 +47,33 @@ public class JspMealController extends AbstractMealController {
         return "meals";
     }
 
-    @GetMapping(value = "/meals/create")
-    public String createMeal(Model model) {
-        log.info("/meals/create");
+    @GetMapping("/create")
+    public String create(Model model) {
+        log.info("show create meal form");
         final Meal meal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000);
         model.addAttribute("meal", meal);
         return "mealForm";
     }
 
-    @GetMapping(value = "/meals/update")
-    public String updateMeal(HttpServletRequest request, Model model) {
-        log.info("/meals/update");
+    @GetMapping("/update")
+    public String update(HttpServletRequest request, Model model) {
+        log.info("show edit meal form");
         int id = getId(request);
         Meal meal = get(id);
         model.addAttribute("meal", meal);
         return "mealForm";
     }
 
-    @GetMapping(value = "/meals/delete")
-    public String deleteMeal(HttpServletRequest request) {
-        log.info("/meals/delete");
+    @GetMapping("/delete")
+    public String delete(HttpServletRequest request) {
+        log.info("delete meal");
         delete(getId(request));
         return "redirect:/meals";
     }
 
-    @PostMapping("/meals")
-    public String setMeal(HttpServletRequest request) throws UnsupportedEncodingException {
-        log.info("post /meals");
+    @PostMapping
+    public String save(HttpServletRequest request) throws UnsupportedEncodingException {
+        log.info("save mea");
         request.setCharacterEncoding("UTF-8");
         Meal meal = new Meal(
                 LocalDateTime.parse(request.getParameter("dateTime")),

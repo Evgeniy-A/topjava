@@ -5,6 +5,8 @@ import org.junit.Rule;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -25,6 +27,9 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 @ActiveProfiles(resolver = ActiveDbProfileResolver.class)
 public abstract class AbstractServiceTest {
 
+    @Autowired
+    private Environment environment;
+
     @ClassRule
     public static ExternalResource summary = TimingRules.SUMMARY;
 
@@ -38,5 +43,9 @@ public abstract class AbstractServiceTest {
                 .satisfiesAnyOf(
                         ex -> assertThat(ex).isInstanceOf(rootExceptionClass),
                         ex -> assertThat(ex).hasRootCauseInstanceOf(rootExceptionClass));
+    }
+
+    protected boolean isJpaBased() {
+        return environment.acceptsProfiles("jpa", "datajpa");
     }
 }

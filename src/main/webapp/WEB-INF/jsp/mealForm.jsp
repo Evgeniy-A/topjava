@@ -1,6 +1,4 @@
-
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <html>
@@ -12,17 +10,10 @@
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
 
     <h2>
-        <c:choose>
-            <c:when test="${empty meal.id}">
-                <spring:message code="meal.create"/>
-            </c:when>
-            <c:otherwise>
-                <spring:message code="meal.edit"/>
-            </c:otherwise>
-        </c:choose>
+        <spring:message code="${empty meal.id ? 'meal.add' : 'meal.edit'}"/>
     </h2>
 
-    <form method="post" action="${pageContext.request.contextPath}/meals">
+    <form method="post" action="meals">
         <input type="hidden" name="id" value="${meal.id}">
 
         <dl>
