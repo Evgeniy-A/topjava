@@ -78,7 +78,7 @@ public class JspMealController extends AbstractMealController {
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")));
         if (StringUtils.hasLength(request.getParameter("id"))) {
-            int id = (getId(request));
+            int id = getId(request);
             meal.setId(id);
             update(meal, id);
         } else create(meal);
