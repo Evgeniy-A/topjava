@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.ActiveDbProfileResolver;
 import ru.javawebinar.topjava.TimingRules;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @ContextConfiguration({
@@ -34,6 +35,8 @@ public abstract class AbstractServiceTest {
     protected <T extends Throwable> void validateRootCause(Class<T> rootExceptionClass, Runnable runnable) {
         assertThatExceptionOfType(Throwable.class)
                 .isThrownBy(runnable::run)
-                .withRootCauseInstanceOf(rootExceptionClass);
+                .satisfiesAnyOf(
+                        ex -> assertThat(ex).isInstanceOf(rootExceptionClass),
+                        ex -> assertThat(ex).hasRootCauseInstanceOf(rootExceptionClass));
     }
 }

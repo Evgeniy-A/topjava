@@ -1,10 +1,21 @@
 package ru.javawebinar.topjava.util;
 
-
 import ru.javawebinar.topjava.model.AbstractBaseEntity;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import javax.validation.Validation;
+import javax.validation.ValidatorFactory;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
+import java.util.Set;
+
 public class ValidationUtil {
+
+    private static final ValidatorFactory FACTORY =
+            Validation.buildDefaultValidatorFactory();
+
+    private static final Validator VALIDATOR = FACTORY.getValidator();
 
     private ValidationUtil() {
     }
@@ -41,6 +52,13 @@ public class ValidationUtil {
             entity.setId(id);
         } else if (entity.id() != id) {
             throw new IllegalArgumentException(entity + " must be with id=" + id);
+        }
+    }
+
+    public static void validate(AbstractBaseEntity entity) {
+        Set<ConstraintViolation<AbstractBaseEntity>> violations = VALIDATOR.validate(entity);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(violations);
         }
     }
 }
