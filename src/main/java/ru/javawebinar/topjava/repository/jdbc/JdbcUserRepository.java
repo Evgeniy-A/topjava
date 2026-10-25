@@ -2,7 +2,10 @@ package ru.javawebinar.topjava.repository.jdbc;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
-import org.springframework.jdbc.core.*;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -117,8 +120,8 @@ public class JdbcUserRepository implements UserRepository {
             int id = rs.getInt("id");
             User user = users.get(id);
             if (user == null) {
-                user = ROW_MAPPER.mapRow(rs, 0);
-                user.setRoles(new HashSet<>());
+                user = ROW_MAPPER.mapRow(rs, rs.getRow());
+                user.setRoles(EnumSet.noneOf(Role.class));
                 users.put(id, user);
             }
             String strRole = rs.getString("role");

@@ -25,7 +25,7 @@
     <beans profile="hsqldb">
         <context:property-placeholder location="classpath:db/hsqldb.properties" system-properties-mode="OVERRIDE"/>
 
-        <!--no pooling-->
+        <!--no pooling system-properties-mode="OVERRIDE"-->
         <bean id="dataSource"
               class="org.springframework.jdbc.datasource.DriverManagerDataSource"
               p:driverClassName="org.hsqldb.jdbcDriver"
@@ -93,7 +93,7 @@
                     <entry key="#{T(org.hibernate.cache.jcache.ConfigSettings).PROVIDER}"
                            value="org.ehcache.jsr107.EhcacheCachingProvider"/>
                     <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_SECOND_LEVEL_CACHE}"
-                           value="${hibernate.cache.use_second_level_cache:true}"/>
+                           value="true"/>
                     <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_QUERY_CACHE}"
                            value="false"/> <!--default-->
                     <!--

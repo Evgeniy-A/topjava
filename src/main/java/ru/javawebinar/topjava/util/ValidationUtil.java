@@ -3,19 +3,16 @@ package ru.javawebinar.topjava.util;
 import ru.javawebinar.topjava.model.AbstractBaseEntity;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import javax.validation.Validation;
 import javax.validation.Validator;
 import java.util.Set;
 
 public class ValidationUtil {
 
-    private static final ValidatorFactory FACTORY =
-            Validation.buildDefaultValidatorFactory();
-
-    private static final Validator VALIDATOR = FACTORY.getValidator();
+    private static final Validator VALIDATOR =
+            Validation.buildDefaultValidatorFactory().getValidator();
 
     private ValidationUtil() {
     }
