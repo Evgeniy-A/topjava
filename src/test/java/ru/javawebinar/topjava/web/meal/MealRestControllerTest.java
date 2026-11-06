@@ -46,10 +46,53 @@ public class MealRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void getBetweenWithoutParams() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + "get-between"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MEAL_TO_MATCHER.contentJson(mealTos));
+    }
+
+    @Test
+    void getBetweenOnlyTime() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + "get-between")
+                .param("startTime", "09:00")
+                .param("endTime", "14:00"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MEAL_TO_MATCHER.contentJson(List.of(mealTo6, mealTo5, mealTo2, mealTo1)));
+    }
+
+    @Test
+    void getBetweenOnlyDate() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + "get-between")
+                .param("startDate", "2020-01-31")
+                .param("endDate", "2020-01-31"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MEAL_TO_MATCHER.contentJson(List.of(mealTo7, mealTo6, mealTo5, mealTo4)));
+    }
+
+    @Test
+    void getBetweenOnlyStartDate() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + "get-between")
+                .param("startDate", "2020-01-30"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MEAL_TO_MATCHER.contentJson(mealTos));
+    }
+
+    @Test
     void getBetween() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + "get-between")
-                .param("start", "2020-01-31T09:00:00")
-                .param("end", "2020-01-31T14:00:00"))
+                .param("startDate", "2020-01-31")
+                .param("startTime", "09:00")
+                .param("endDate", "2020-01-31")
+                .param("endTime", "14:00"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
