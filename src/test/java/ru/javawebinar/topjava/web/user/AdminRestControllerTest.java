@@ -3,6 +3,8 @@ package ru.javawebinar.topjava.web.user;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.EnabledIf;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.javawebinar.topjava.model.User;
@@ -15,6 +17,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.javawebinar.topjava.MealTestData.*;
+import static ru.javawebinar.topjava.UserTestData.getNew;
+import static ru.javawebinar.topjava.UserTestData.getUpdated;
 import static ru.javawebinar.topjava.UserTestData.*;
 
 class AdminRestControllerTest extends AbstractControllerTest {
@@ -32,6 +37,20 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 // https://jira.spring.io/browse/SPR-14472
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(USER_MATCHER.contentJson(admin));
+    }
+
+    @Test
+    @EnabledIf(expression = "#{environment.acceptsProfiles('datajpa')}", loadContext = true)
+    void getWithMeals() throws Exception {
+        MvcResult result = perform(MockMvcRequestBuilders.get(REST_URL + ADMIN_ID + "/with-meals"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(USER_MATCHER.contentJson(admin))
+                .andReturn();
+        String json = result.getResponse().getContentAsString();
+        User user = JsonUtil.readValue(json, User.class);
+        MEAL_MATCHER.assertMatch(user.getMeals(), adminMeal2, adminMeal1);
     }
 
     @Test

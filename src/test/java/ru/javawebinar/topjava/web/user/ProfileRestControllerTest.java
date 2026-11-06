@@ -3,6 +3,8 @@ package ru.javawebinar.topjava.web.user;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.EnabledIf;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserService;
@@ -12,6 +14,8 @@ import ru.javawebinar.topjava.web.json.JsonUtil;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.javawebinar.topjava.MealTestData.MEAL_MATCHER;
+import static ru.javawebinar.topjava.MealTestData.meals;
 import static ru.javawebinar.topjava.UserTestData.*;
 import static ru.javawebinar.topjava.web.user.ProfileRestController.REST_URL;
 
@@ -26,6 +30,20 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(USER_MATCHER.contentJson(user));
+    }
+
+    @Test
+    @EnabledIf(expression = "#{environment.acceptsProfiles('datajpa')}", loadContext = true)
+    void getWithMeals() throws Exception {
+        MvcResult result = perform(MockMvcRequestBuilders.get(REST_URL + "/with-meals"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(USER_MATCHER.contentJson(user))
+                .andReturn();
+        String json = result.getResponse().getContentAsString();
+        User user = JsonUtil.readValue(json, User.class);
+        MEAL_MATCHER.assertMatch(user.getMeals(), meals);
     }
 
     @Test
