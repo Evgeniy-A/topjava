@@ -3,7 +3,7 @@ let form;
 function makeEditable(datatableApi) {
     ctx.datatableApi = datatableApi;
     form = $('#detailsForm');
-    $(".delete").click(function () {
+    $("#datatable").on("click", ".delete", function () {
         if (confirm('Are you sure?')) {
             deleteRow($(this).closest('tr').attr("id"));
         }
@@ -33,7 +33,7 @@ function deleteRow(id) {
 }
 
 function updateTable() {
-    $.get(ctx.ajaxUrl, function (data) {
+    $.get(ctx.getAllUrl || ctx.ajaxUrl, function (data) {
         ctx.datatableApi.clear().rows.add(data).draw();
     });
 }
@@ -77,4 +77,8 @@ function failNoty(jqXHR) {
         layout: "bottomRight"
     });
     failedNote.show()
+}
+
+function renderDeleteBtn() {
+    return '<a class="delete"><span class="fa fa-remove"></span></a>';
 }

@@ -9,6 +9,7 @@ const ctx = {
 $(function () {
     makeEditable(
         $("#datatable").DataTable({
+            "rowId": "id",
             "paging": false,
             "info": true,
             "columns": [
@@ -32,7 +33,8 @@ $(function () {
                     "orderable": false
                 },
                 {
-                    "defaultContent": "Delete",
+                    "render": renderDeleteBtn,
+                    "defaultContent": "",
                     "orderable": false
                 }
             ],
