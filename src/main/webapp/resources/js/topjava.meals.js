@@ -38,3 +38,15 @@ $(function () {
         })
     );
 });
+
+function filterMeals() {
+    const params = $("#filter").serialize();
+    $.get(mealAjaxUrl + "filter", params, function (data) {
+        ctx.datatableApi.clear().rows.add(data).draw();
+    });
+}
+
+function clearFilter() {
+    $("#filter")[0].reset();
+    updateTable();
+}
