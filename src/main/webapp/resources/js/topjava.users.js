@@ -47,3 +47,12 @@ $(function () {
         })
     );
 });
+
+function enable(checkbox, id) {
+    const enabled = checkbox.checked;
+    $.post(ctx.ajaxUrl + id, {enabled: enabled}, function () {
+        $(checkbox).closest("tr").attr("data-user-enabled", enabled);
+    }).fail(function () {
+        checkbox.checked = !enabled;
+    });
+}
