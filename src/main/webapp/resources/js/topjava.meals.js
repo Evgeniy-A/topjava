@@ -3,7 +3,8 @@ const getAllUrl = "meals/all";
 
 const ctx = {
     ajaxUrl: mealAjaxUrl,
-    getAllUrl: getAllUrl
+    getAllUrl: getAllUrl,
+    updateTable: filterMeals
 };
 
 // $(document).ready(function () {
@@ -41,9 +42,7 @@ $(function () {
 
 function filterMeals() {
     const params = $("#filter").serialize();
-    $.get(mealAjaxUrl + "filter", params, function (data) {
-        ctx.datatableApi.clear().rows.add(data).draw();
-    });
+    $.get(mealAjaxUrl + "filter", params, updateTableByData);
 }
 
 function clearFilter() {
